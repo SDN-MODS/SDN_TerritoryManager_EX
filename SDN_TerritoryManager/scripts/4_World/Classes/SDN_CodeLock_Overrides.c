@@ -119,4 +119,24 @@ modded class ItemBase
             SDN_CodeLockManager.SDN_CheckAndDropCodeLock(this, item);
         }
     }
+
+    // A ARMA DEFINITIVA CONTRA MODS REBELDES (RBB, etc)
+    // Esse evento dispara no PRÓPRIO CADEADO quando ele é anexado a qualquer lugar.
+    // Assim não dependemos de que a "Porta" chame o super() do EEItemAttached.
+    override void OnWasAttached(EntityAI parent, int slot_id)
+    {
+        super.OnWasAttached(parent, slot_id);
+
+        if (GetGame().IsServer())
+        {
+            string myType = this.GetType();
+            myType.ToLower();
+
+            // Se ESSE item for um CodeLock ou CombinationLock, manda ele próprio verificar e cair se precisar.
+            if (this.IsInherited(CombinationLock) || myType.Contains("codelock"))
+            {
+                SDN_CodeLockManager.SDN_CheckAndDropCodeLock(parent, this);
+            }
+        }
+    }
 }
