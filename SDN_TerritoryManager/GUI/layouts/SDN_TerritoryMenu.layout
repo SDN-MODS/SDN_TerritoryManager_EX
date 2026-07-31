@@ -1,0 +1,636 @@
+WindowWidgetClass SDN_TerritoryMenuRoot {
+ visible 1
+ ignorepointer 0
+ position 0 0
+ size 1 1
+ halign center_ref
+ valign center_ref
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ {
+  PanelWidgetClass BackgroundPanel {
+   visible 1
+   ignorepointer 0
+   color 0.08 0.08 0.09 0.98
+   position 0 0
+   size 0.75 0.85
+   halign center_ref
+   valign center_ref
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   style DayZDefaultPanel
+   {
+    TextWidgetClass TitleText {
+     ignorepointer 1
+     position 0 0.02
+     size 0.9 0.06
+     halign center_ref
+     valign top_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     text "Territory Manager (SDN)"
+     font "gui/fonts/etelkatextpro28"
+     "text halign" center
+     "text valign" center
+    }
+    PanelWidgetClass HeaderSeparator {
+     visible 1
+     ignorepointer 1
+     color 0.4 0.4 0.4 0.5
+     position 0 0.085
+     size 0.96 0.002
+     halign center_ref
+     valign top_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     style blank
+    }
+    ButtonWidgetClass CloseButton {
+     color 0.75 0.15 0.15 1
+     position 0.03 0.02
+     size 0.14 0.045
+     halign right_ref
+     valign top_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     style DayZDefaultButton
+     {
+      TextWidgetClass CloseText {
+       ignorepointer 1
+       position 0 0
+       size 1 1
+       halign center_ref
+       valign center_ref
+       text "CLOSE (X)"
+       font "gui/fonts/etelkatextpro22"
+       "text halign" center
+       "text valign" center
+      }
+     }
+    }
+    PanelWidgetClass LeftPanel {
+     ignorepointer 1
+     position 0.02 0.11
+     size 0.46 0.72
+     halign left_ref
+     valign top_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     {
+      PanelWidgetClass GeneralInfoBlock {
+       ignorepointer 1
+       color 0.03 0.03 0.03 0.6
+       position 0 0
+       size 1 0.4
+       halign center_ref
+       valign top_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       style DayZDefaultPanel
+       {
+        TextWidgetClass InfoBlockTitle {
+         ignorepointer 1
+         color 0.8 0.8 0.8 1
+         position 0 0.05
+         size 0.94 0.15
+         halign center_ref
+         valign top_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         text "BASE IDENTIFICATION"
+         font "gui/fonts/etelkatextpro22"
+         "text halign" center
+         "text valign" center
+        }
+        TextWidgetClass LabelName {
+         ignorepointer 1
+         position 0.03 0.25
+         size 0.15 0.15
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         text "Name:"
+         font "gui/fonts/etelkatextpro22"
+         "text halign" left
+         "text valign" center
+        }
+        EditBoxWidgetClass EditBoxName {
+         position 0.2 0.25
+         size 0.55 0.15
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         font "gui/fonts/etelkatextpro22"
+        }
+        ButtonWidgetClass SaveNameButton {
+         color 0.15 0.45 0.7 1
+         position 0.77 0.25
+         size 0.2 0.15
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         style DayZDefaultButton
+         {
+          TextWidgetClass SaveNameText {
+           ignorepointer 1
+           position 0 0
+           size 1 1
+           halign center_ref
+           valign center_ref
+           text "SAVE"
+           font "gui/fonts/etelkatextpro22"
+           "text halign" center
+           "text valign" center
+          }
+         }
+        }
+        TextWidgetClass OwnerText {
+         ignorepointer 1
+         position 0.03 0.48
+         size 0.94 0.12
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         text "Current Owner: Loading..."
+         font "gui/fonts/etelkatextpro22"
+         "text halign" left
+         "text valign" center
+        }
+        TextWidgetClass CoordinatesText {
+         ignorepointer 1
+         color 0.6 0.6 0.6 1
+         position 0.03 0.62
+         size 0.94 0.12
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         text "Central Coordinates: X: 0.0 | Y: 0.0"
+         font "gui/fonts/etelkatextpro22"
+         "text halign" left
+         "text valign" center
+        }
+        TextWidgetClass RadiusText {
+         ignorepointer 1
+         position 0.03 0.76
+         size 0.94 0.12
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         text "Protection Radius: 0m"
+         font "gui/fonts/etelkatextpro22"
+         "text halign" left
+         "text valign" center
+        }
+       }
+      }
+      PanelWidgetClass LimitsBlock {
+       ignorepointer 1
+       color 0.03 0.03 0.03 0.6
+       position 0 0.43
+       size 1 0.35
+       halign center_ref
+       valign top_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       style DayZDefaultPanel
+       {
+        TextWidgetClass LimitsBlockTitle {
+         ignorepointer 1
+         color 0.8 0.8 0.8 1
+         position 0 0.06
+         size 0.94 0.18
+         halign center_ref
+         valign top_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         text "LIMITS AND CAPACITY"
+         font "gui/fonts/etelkatextpro22"
+         "text halign" center
+         "text valign" center
+        }
+        TextWidgetClass BuildLimitText {
+         ignorepointer 1
+         position 0.03 0.3
+         size 0.94 0.15
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         text "Base Parts: 0 / 0"
+         font "gui/fonts/etelkatextpro22"
+         "text halign" left
+         "text valign" center
+        }
+        TextWidgetClass StorageLimitText {
+         ignorepointer 1
+         position 0.03 0.5
+         size 0.94 0.15
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         text "Storage Limit: 0 / 0"
+         font "gui/fonts/etelkatextpro22"
+         "text halign" left
+         "text valign" center
+        }
+        TextWidgetClass CodeLockLimitText {
+         ignorepointer 1
+         position 0.03 0.7
+         size 0.94 0.15
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         text "Code Lock Limit: 0 / 0"
+         font "gui/fonts/etelkatextpro22"
+         "text halign" left
+         "text valign" center
+        }
+       }
+      }
+      PanelWidgetClass InvitesBlock {
+       ignorepointer 1
+       color 0.03 0.03 0.03 0.6
+       position 0 0.81
+       size 1 0.19
+       halign center_ref
+       valign top_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       style DayZDefaultPanel
+       {
+        TextWidgetClass TextInviteStatus {
+         ignorepointer 1
+         position 0.03 0.371
+         size 0.416 0.286
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         text "Status: CLOSED"
+         font "gui/fonts/etelkatextpro22"
+         "text halign" left
+         "text valign" center
+        }
+        ButtonWidgetClass ToggleInvitesButton {
+         color 0.15 0.6 0.15 1
+         position 0.473 0.361
+         size 0.495 0.306
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         style DayZDefaultButton
+         {
+          TextWidgetClass ToggleInvitesText {
+           ignorepointer 1
+           position 0 0
+           size 1 1
+           halign center_ref
+           valign center_ref
+           text "OPEN INVITATIONS"
+           font "gui/fonts/etelkatextpro22"
+           "text halign" center
+           "text valign" center
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+    PanelWidgetClass RightPanel {
+     ignorepointer 1
+     position 0.02 0.11
+     size 0.48 0.72
+     halign right_ref
+     valign top_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     {
+      PanelWidgetClass MembersBlock {
+       ignorepointer 1
+       color 0.03 0.03 0.03 0.6
+       position 0 0
+       size 1 1
+       halign center_ref
+       valign top_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       style DayZDefaultPanel
+       {
+        TextWidgetClass MembersTitle {
+         ignorepointer 1
+         color 0.8 0.8 0.8 1
+         position 0 0.02
+         size 0.94 0.06
+         halign center_ref
+         valign top_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         text "TERRITORY MEMBERS (0 / 10)"
+         font "gui/fonts/etelkatextpro22"
+         "text halign" center
+         "text valign" center
+        }
+        TextListboxWidgetClass MembersList {
+         color 0.9 0.9 0.9 1
+         position 0 0.1
+         size 0.94 0.65
+         halign center_ref
+         valign top_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         style Default
+         "title visible" 0
+         colums "Jogador;65;Cargo;35"
+         lines 15
+        }
+        TextWidgetClass SelectedMemberName {
+         ignorepointer 1
+         position 0 0.78
+         size 0.94 0.06
+         halign center_ref
+         valign top_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         text "Selected: None"
+         font "gui/fonts/etelkatextpro22"
+         "text halign" center
+         "text valign" center
+        }
+        ButtonWidgetClass PromoteButton {
+         color 0.15 0.55 0.3 1
+         position 0.03 0.86
+         size 0.3 0.064
+         halign left_ref
+         valign top_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         style DayZDefaultButton
+         {
+          TextWidgetClass PromoteText {
+           ignorepointer 1
+           position 0 -0.014
+           size 1 0.972
+           halign center_ref
+           valign center_ref
+           text "PROMOTE"
+           font "gui/fonts/etelkatextpro22"
+           "text halign" center
+           "text valign" center
+          }
+         }
+        }
+        ButtonWidgetClass DemoteButton {
+         color 0.7 0.6 0.1 1
+         position 0 0.86
+         size 0.3 0.064
+         halign center_ref
+         valign top_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         style DayZDefaultButton
+         {
+          TextWidgetClass DemoteText {
+           ignorepointer 1
+           position 0 0
+           size 1 1
+           halign center_ref
+           valign center_ref
+           text "DEMOTE"
+           font "gui/fonts/etelkatextpro22"
+           "text halign" center
+           "text valign" center
+          }
+         }
+        }
+        ButtonWidgetClass KickButton {
+         color 0.75 0.15 0.15 1
+         position 0.03 0.86
+         size 0.3 0.065
+         halign right_ref
+         valign top_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         style DayZDefaultButton
+         {
+          TextWidgetClass KickText {
+           ignorepointer 1
+           position 0 0
+           size 1 1
+           halign center_ref
+           valign center_ref
+           text "KICK OUT"
+           font "gui/fonts/etelkatextpro22"
+           "text halign" center
+           "text valign" center
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+    ButtonWidgetClass AdminResetButton {
+     color 0.75 0.4 0.1 1
+     position 0.502 0.114
+     size 0.48 0.05
+     halign left_ref
+     valign bottom_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     style DayZDefaultButton
+     {
+      TextWidgetClass AdminResetText {
+       ignorepointer 1
+       position 0 0
+       size 1 1
+       halign center_ref
+       valign center_ref
+       text "RESET (ADMIN)"
+       font "gui/fonts/etelkatextpro22"
+       "text halign" center
+       "text valign" center
+      }
+     }
+    }
+    ButtonWidgetClass LeaveBaseButton {
+     color 0.6 0.12 0.12 1
+     position 0.514 0.184
+     size 0.224 0.034
+     halign left_ref
+     valign bottom_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     style DayZDefaultButton
+     {
+      TextWidgetClass LeaveBaseText {
+       ignorepointer 1
+       position 0 0
+       size 1 1
+       halign center_ref
+       valign center_ref
+       text "ABANDON BASE"
+       font "gui/fonts/etelkatextpro22"
+       "text halign" center
+       "text valign" center
+      }
+     }
+    }
+    ButtonWidgetClass TransferTerritoryButton {
+     color 0.8 0.5 0.1 1
+     position 0.035 0.183
+     size 0.222 0.034
+     halign right_ref
+     valign bottom_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     style DayZDefaultButton
+     {
+      TextWidgetClass TransferTerritoryText {
+       ignorepointer 1
+       position 0 -0.013
+       size 1 0.974
+       halign center_ref
+       valign center_ref
+       text "TRANSFER BASE"
+       font "gui/fonts/etelkatextpro22"
+       "text halign" center
+       "text valign" center
+      }
+     }
+    }
+   }
+  }
+  PanelWidgetClass TopAccentLine {
+   ignorepointer 1
+   color 0.86 0.1 0.1 1
+   position 0 0.143
+   size 0.721 0.007
+   halign center_ref
+   valign top_ref
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   style DayZDefaultPanel
+  }
+  PanelWidgetClass TopAccentLine0 {
+   ignorepointer 1
+   color 0.86 0.1 0.1 1
+   position 0 0.143
+   size 0.721 0.007
+   halign center_ref
+   valign top_ref
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   style DayZDefaultPanel
+  }
+  PanelWidgetClass TopAccentLine1 {
+   ignorepointer 1
+   color 0.86 0.1 0.1 1
+   position -0.187 0.22
+   size 0.325 0.004
+   halign center_ref
+   valign top_ref
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   style DayZDefaultPanel
+  }
+  PanelWidgetClass TopAccentLine2 {
+   ignorepointer 1
+   color 0.86 0.1 0.1 1
+   position -0.187 0.487
+   size 0.325 0.004
+   halign center_ref
+   valign top_ref
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   style DayZDefaultPanel
+  }
+  PanelWidgetClass TopAccentLine3 {
+   ignorepointer 1
+   color 0.86 0.1 0.1 1
+   position 0.176 0.22
+   size 0.325 0.004
+   halign center_ref
+   valign top_ref
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   style DayZDefaultPanel
+  }
+  PanelWidgetClass TopAccentLine4 {
+   ignorepointer 1
+   color 0.86 0.1 0.1 1
+   position 0.177 0.686
+   size 0.325 0.004
+   halign center_ref
+   valign top_ref
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   style DayZDefaultPanel
+  }
+ }
+}
