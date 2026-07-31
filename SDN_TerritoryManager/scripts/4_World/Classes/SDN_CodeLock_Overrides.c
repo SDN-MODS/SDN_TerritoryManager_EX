@@ -33,6 +33,15 @@ modded class BaseBuildingBase
 
         return true;
     }
+
+    override void EEItemAttached(EntityAI item, string slot_name)
+    {
+        super.EEItemAttached(item, slot_name);
+        if (GetGame().IsServer())
+        {
+            SDN_CodeLockManager.SDN_CheckAndDropCodeLock(this, item);
+        }
+    }
 }
 
 // Cobre todas as Barracas (Tents), que não herdam de BaseBuildingBase, mas de ItemBase
@@ -61,6 +70,15 @@ modded class TentBase
         }
 
         return true;
+    }
+
+    override void EEItemAttached(EntityAI item, string slot_name)
+    {
+        super.EEItemAttached(item, slot_name);
+        if (GetGame().IsServer())
+        {
+            SDN_CodeLockManager.SDN_CheckAndDropCodeLock(this, item);
+        }
     }
 }
 
@@ -91,5 +109,14 @@ modded class ItemBase
         }
 
         return true;
+    }
+
+    override void EEItemAttached(EntityAI item, string slot_name)
+    {
+        super.EEItemAttached(item, slot_name);
+        if (GetGame().IsServer())
+        {
+            SDN_CodeLockManager.SDN_CheckAndDropCodeLock(this, item);
+        }
     }
 }

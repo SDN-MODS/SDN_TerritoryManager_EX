@@ -93,15 +93,8 @@ class SDN_CodeLockManager
             if (tObj.IsInherited(BaseBuildingBase) || tObj.IsInherited(TentBase) || tObj.IsInherited(ItemBase))
             {
                 EntityAI baseObj = EntityAI.Cast(tObj);
-                if (baseObj)
+                if (baseObj && baseObj.GetInventory())
                 {
-                    bool hasLock = false;
-
-                    if (baseObj.GetAttachmentByType(CombinationLock))
-                    {
-                        currentLocks++;
-                    }
-                    
                     for (int i = 0; i < baseObj.GetInventory().AttachmentCount(); i++)
                     {
                         EntityAI attachment = baseObj.GetInventory().GetAttachmentFromIndex(i);
@@ -109,7 +102,7 @@ class SDN_CodeLockManager
                         {
                             string attType = attachment.GetType();
                             attType.ToLower();
-                            if (attType.Contains("codelock"))
+                            if (attachment.IsInherited(CombinationLock) || attType.Contains("codelock"))
                             {
                                 currentLocks++;
                             }
@@ -131,6 +124,107 @@ class SDN_CodeLockManager
 
         return true;
     }
+
+    // --- POST ATTACH (FOR BYPASSING MODS) ---
+    static void SDN_CheckAndDropCodeLock(EntityAI target, EntityAI item)
+    {
+        if (!item || !target) return;
+
+        string attType = item.GetType();
+        attType.ToLower();
+
+        if (item.IsInherited(CombinationLock) || attType.Contains("codelock"))
+        {
+            if (SDN_IsCodeLockLimitExceededPostAttach(target))
+            {
+                SDN_NotifyPlayersLimitReached(target.GetPosition());
+
+                // Using CallQueue to delay the drop prevents inventory state corruption
+                GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(SDN_CodeLockManager.SDN_DropItem, target, item);
+            }
+        }
+    }
+
+    static void SDN_DropItem(EntityAI target, EntityAI item)
+    {
+        if (target && item && target.GetInventory())
+        {
+            target.GetInventory().DropEntity(InventoryMode.SERVER, target, item);
+        }
+    }
+
+    static bool SDN_IsCodeLockLimitExceededPostAttach(EntityAI target)
+    {
+        SDN_TerritoryConfig config = SDN_TerritoryConfig.Get();
+        if (!config) return false;
+
+        int maxLocks = config.MaxCodeLocksPerTerritory;
+        if (maxLocks < 0) return false;
+
+        float radius = config.TerritoryRadius;
+        vector pos = target.GetPosition();
+
+        array<Object> objectsAround = new array<Object>;
+        array<CargoBase> proxyCargos = new array<CargoBase>;
+        GetGame().GetObjectsAtPosition(pos, radius, objectsAround, proxyCargos);
+
+        TerritoryFlag closestFlag = null;
+        float closestDist = radius + 1.0;
+
+        foreach (Object obj : objectsAround)
+        {
+            TerritoryFlag flag = TerritoryFlag.Cast(obj);
+            if (flag)
+            {
+                float dist = vector.Distance(pos, flag.GetPosition());
+                if (dist <= radius && dist < closestDist)
+                {
+                    closestDist = dist;
+                    closestFlag = flag;
+                }
+            }
+        }
+
+        if (!closestFlag) return false; // Not in territory
+
+        int currentLocks = 0;
+        array<Object> territoryObjs = new array<Object>;
+        GetGame().GetObjectsAtPosition(closestFlag.GetPosition(), radius, territoryObjs, proxyCargos);
+
+        foreach (Object tObj : territoryObjs)
+        {
+            if (tObj.IsInherited(BaseBuildingBase) || tObj.IsInherited(TentBase) || tObj.IsInherited(ItemBase))
+            {
+                EntityAI baseObj = EntityAI.Cast(tObj);
+                if (baseObj && baseObj.GetInventory())
+                {
+                    for (int i = 0; i < baseObj.GetInventory().AttachmentCount(); i++)
+                    {
+                        EntityAI attachment = baseObj.GetInventory().GetAttachmentFromIndex(i);
+                        if (attachment)
+                        {
+                            string attType = attachment.GetType();
+                            attType.ToLower();
+                            if (attachment.IsInherited(CombinationLock) || attType.Contains("codelock"))
+                            {
+                                currentLocks++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Post-attach: The item is already attached, so it is counted in currentLocks.
+        // Therefore, if currentLocks > maxLocks, we exceed the limit.
+        if (currentLocks > maxLocks)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
 
     // Função de notificação via RPC Vanilla
     static void SDN_NotifyPlayersLimitReached(vector pos)
