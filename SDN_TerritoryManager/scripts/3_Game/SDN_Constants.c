@@ -18,9 +18,9 @@ class SDN_TerritoryPerm
 
 	// Permissões compostas (agora compilam com segurança)
 	static int DEFAULTOWNER 	= 1;
-	static int DEFAULTMEMBER 	= DEPLOY + LOWERFLAG;
-	static int PUBLIC 			= LOWERFLAG + BUILD;
-	static int MODERATOR 		= ADDMEMBER + REMOVEMEMBER + DEPLOY + BUILD + DISMANTLE + LOWERFLAG; // NOVO CARGO
+	static int DEFAULTMEMBER 	= DEPLOY;
+	static int PUBLIC 			= BUILD;
+	static int MODERATOR 		= ADDMEMBER + REMOVEMEMBER + DEPLOY + BUILD + DISMANTLE; // NOVO CARGO
 }
 
 class SDN_TerritoryIcons 
