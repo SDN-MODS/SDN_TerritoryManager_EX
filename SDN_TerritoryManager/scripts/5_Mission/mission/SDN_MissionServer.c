@@ -362,6 +362,7 @@ modded class MissionServer extends MissionBase
 				flag.SDN_RemoveMember(newOwnerGUID);
 				flag.SDN_SetTerritoryOwner(newOwnerGUID, newOwnerName);
 				flag.SDN_AddMember(oldOwnerGUID, sender.GetName());
+					flag.SDN_PromoteModerator(oldOwnerGUID);
 
 				if (pb)
 				{
