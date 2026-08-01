@@ -64,7 +64,7 @@ class SDN_CodeLockManager
                 }
             }
 
-            if (!closestFlag.SDN_IsTerritoryOwner(guid) && !closestFlag.SDN_CheckPlayerPermission(guid, SDN_TerritoryPerm.BUILD))
+            if (!closestFlag.SDN_IsTerritoryOwner(guid) && !closestFlag.SDN_CheckPlayerPermission(guid, SDN_TerritoryPerm.REMOVEMEMBER))
             {
                 if (GetGame().IsServer())
                 {
@@ -135,14 +135,85 @@ class SDN_CodeLockManager
 
         if (item.IsInherited(CombinationLock) || attType.Contains("codelock"))
         {
-            if (SDN_IsCodeLockLimitExceededPostAttach(target))
+            bool shouldDrop = false;
+
+            // 1. Verifica se quem colocou tinha permissão
+            if (SDN_IsPlayerUnauthorizedPostAttach(target))
+            {
+                shouldDrop = true;
+            }
+            // 2. Se tinha permissão, verifica se estourou o limite de cadeados da base
+            else if (SDN_IsCodeLockLimitExceededPostAttach(target))
             {
                 SDN_NotifyPlayersLimitReached(target.GetPosition());
+                shouldDrop = true;
+            }
 
+            if (shouldDrop)
+            {
                 // Using CallQueue to delay the drop prevents inventory state corruption
                 GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(SDN_CodeLockManager.SDN_DropItem, target, item);
             }
         }
+    }
+
+    static bool SDN_IsPlayerUnauthorizedPostAttach(EntityAI target)
+    {
+        SDN_TerritoryConfig config = SDN_TerritoryConfig.Get();
+        if (!config) return false;
+
+        float radius = config.TerritoryRadius;
+        vector pos = target.GetPosition();
+
+        array<Object> objectsAround = new array<Object>;
+        array<CargoBase> proxyCargos = new array<CargoBase>;
+        GetGame().GetObjectsAtPosition(pos, radius, objectsAround, proxyCargos);
+
+        TerritoryFlag closestFlag = null;
+        float closestDist = radius + 1.0;
+
+        foreach (Object obj : objectsAround)
+        {
+            TerritoryFlag flag = TerritoryFlag.Cast(obj);
+            if (flag)
+            {
+                float dist = vector.Distance(pos, flag.GetPosition());
+                if (dist <= radius && dist < closestDist)
+                {
+                    closestDist = dist;
+                    closestFlag = flag;
+                }
+            }
+        }
+
+        if (!closestFlag) return false; // Not in territory
+
+        PlayerBase closestPlayer = null;
+        float closestPlayerDist = 5.0; // 5 meters max for attachment
+        array<Man> players = new array<Man>;
+        GetGame().GetPlayers(players);
+        foreach (Man p : players)
+        {
+            float pDist = vector.Distance(p.GetPosition(), target.GetPosition());
+            if (pDist < closestPlayerDist)
+            {
+                closestPlayerDist = pDist;
+                closestPlayer = PlayerBase.Cast(p);
+            }
+        }
+
+        if (closestPlayer && closestPlayer.GetIdentity())
+        {
+            string guid = closestPlayer.GetIdentity().GetPlainId();
+            if (!closestFlag.SDN_IsTerritoryOwner(guid) && !closestFlag.SDN_CheckPlayerPermission(guid, SDN_TerritoryPerm.REMOVEMEMBER))
+            {
+                string msgWit = SDN_TerritoryConfig.Get().MessageSettings.Alerts.WithinTerritory;
+                SDN_MessageManager.SendAlert(closestPlayer, "WithinTerritory", msgWit, true);
+                return true; // Unauthorized
+            }
+        }
+
+        return false; // Authorized or no player found
     }
 
     static void SDN_DropItem(EntityAI target, EntityAI item)
