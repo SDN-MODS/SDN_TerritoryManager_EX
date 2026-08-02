@@ -1,0 +1,88 @@
+FrameWidgetClass SDN_ConfirmationPopupRoot {
+ ignorepointer 1
+ position 0 0
+ size 1 1
+ halign center_ref
+ valign center_ref
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ {
+  WindowWidgetClass SDN_PopupWindow {
+   ignorepointer 0
+   color 0.12 0.12 0.12 0.95
+   position 0 0
+   size 520 220
+   halign center_ref
+   valign center_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   style rover_sim_black_2
+   {
+    TextWidgetClass SDN_TxtTitle {
+     ignorepointer 1
+     position 0 18
+     size 480 32
+     halign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "Do you wish to continue?"
+     font "gui/fonts/metron-bold28"
+     "text halign" center
+     "text valign" center
+    }
+    TextWidgetClass SDN_TxtMessage {
+     ignorepointer 1
+     position 0 60
+     size 480 70
+     halign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     style Normal
+     text "XXXXX"
+     font "gui/fonts/metron22"
+     "exact text size" 20
+     "size to text h" 0
+     "size to text v" 0
+     "text halign" center
+     "text valign" center
+    }
+    ButtonWidgetClass SDN_BtnConfirm {
+     ignorepointer 0
+     color 0.11 0.875 0.302 1
+     position -110 150
+     size 180 42
+     halign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     style DayZDefaultButton
+     text "YES"
+     font "gui/fonts/metron-bold22"
+    }
+    ButtonWidgetClass SDN_BtnCancel {
+     ignorepointer 0
+     color 1 0 0 1
+     position 110 150
+     size 180 42
+     halign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     style DayZDefaultButton
+     text "NO"
+     font "gui/fonts/metron-bold22"
+    }
+   }
+  }
+ }
+}
