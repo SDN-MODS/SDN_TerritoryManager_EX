@@ -36,6 +36,19 @@ class SDN_TerritoryMenu extends UIScriptedMenu
 	protected ButtonWidget m_LeaveBaseButton;
 	protected ButtonWidget m_TransferTerritoryButton;
 	protected ButtonWidget m_AdminResetButton;
+	protected Widget m_ConfirmationRoot;
+	protected TextWidget m_ConfirmationTitle;
+	protected TextWidget m_ConfirmationMsg;
+	protected ButtonWidget m_ConfirmationBtnYes;
+	protected ButtonWidget m_ConfirmationBtnNo;
+
+	protected int m_PendingAction = 0;
+
+	const int ACTION_PROMOTE = 1;
+	const int ACTION_KICK = 2;
+	const int ACTION_TRANSFER = 3;
+	const int ACTION_LEAVE = 4;
+	const int ACTION_ADMIN_RESET = 5;
 
 	protected TerritoryFlag m_TargetFlag;
 	protected bool m_IsAdmin = false;
@@ -85,11 +98,22 @@ class SDN_TerritoryMenu extends UIScriptedMenu
 		m_TransferTerritoryButton = ButtonWidget.Cast(layoutRoot.FindAnyWidget("TransferTerritoryButton"));
 		m_AdminResetButton = ButtonWidget.Cast(layoutRoot.FindAnyWidget("AdminResetButton"));
 
+		// Popup Initialization
+		m_ConfirmationRoot = GetGame().GetWorkspace().CreateWidgets("SDN_TerritoryManager/GUI/layouts/SDN_ConfirmationPopup.layout", layoutRoot);
+		if (m_ConfirmationRoot)
+		{
+			m_ConfirmationTitle = TextWidget.Cast(m_ConfirmationRoot.FindAnyWidget("SDN_TxtTitle"));
+			m_ConfirmationMsg = TextWidget.Cast(m_ConfirmationRoot.FindAnyWidget("SDN_TxtMessage"));
+			m_ConfirmationBtnYes = ButtonWidget.Cast(m_ConfirmationRoot.FindAnyWidget("SDN_BtnConfirm"));
+			m_ConfirmationBtnNo = ButtonWidget.Cast(m_ConfirmationRoot.FindAnyWidget("SDN_BtnCancel"));
+			m_ConfirmationRoot.Show(false);
+		}
+
 		return layoutRoot;
 	}
-
 	void UpdateMenu()
 	{
+		if (m_ConfirmationRoot && m_ConfirmationRoot.IsVisible()) m_ConfirmationRoot.Show(false); // Reset popup on update
 		if (!m_TargetFlag) return;
 		
 		PlayerBase player = PlayerBase.Cast(GetGame().GetPlayer());
@@ -278,6 +302,18 @@ class SDN_TerritoryMenu extends UIScriptedMenu
 		GetGame().GetUIManager().ShowUICursor(false);
 	}
 
+
+	void ShowConfirmationPopup(string title, string msg, int action)
+	{
+		if (m_ConfirmationRoot)
+		{
+			if (m_ConfirmationTitle) m_ConfirmationTitle.SetText(title);
+			if (m_ConfirmationMsg) m_ConfirmationMsg.SetText(msg);
+			m_PendingAction = action;
+			m_ConfirmationRoot.Show(true);
+		}
+	}
+
 	override bool OnClick(Widget w, int x, int y, int button)
 	{
 		super.OnClick(w, x, y, button);
@@ -304,18 +340,64 @@ class SDN_TerritoryMenu extends UIScriptedMenu
 			UpdateMenu();
 			return true;
 		}
-		else if (w == m_PromoteButton)
+
+		else if (w == m_ConfirmationBtnNo)
 		{
-			int rowProm = m_MembersList.GetSelectedRow();
-			if (rowProm > -1)
+			if (m_ConfirmationRoot) m_ConfirmationRoot.Show(false);
+			m_PendingAction = 0;
+			return true;
+		}
+		else if (w == m_ConfirmationBtnYes)
+		{
+			if (m_ConfirmationRoot) m_ConfirmationRoot.Show(false);
+
+			if (m_PendingAction == ACTION_PROMOTE)
 			{
-				Param1<string> paramProm;
-				m_MembersList.GetItemData(rowProm, 0, paramProm);
-				if (paramProm)
+				int rowProm2 = m_MembersList.GetSelectedRow();
+				if (rowProm2 > -1)
 				{
-					GetRPCManager().SendRPC("SDN_TerritoryManager", "SDN_RPC_PromoteMember", new Param2<TerritoryFlag, string>(m_TargetFlag, paramProm.param1), true, null);
+					Param1<string> paramProm2;
+					m_MembersList.GetItemData(rowProm2, 0, paramProm2);
+					if (paramProm2) GetRPCManager().SendRPC("SDN_TerritoryManager", "SDN_RPC_PromoteMember", new Param2<TerritoryFlag, string>(m_TargetFlag, paramProm2.param1), true, null);
 				}
 			}
+			else if (m_PendingAction == ACTION_KICK)
+			{
+				int rowKick2 = m_MembersList.GetSelectedRow();
+				if (rowKick2 > -1)
+				{
+					Param1<string> paramKick2;
+					m_MembersList.GetItemData(rowKick2, 0, paramKick2);
+					if (paramKick2) GetRPCManager().SendRPC("SDN_TerritoryManager", "SDN_RPC_KickMember", new Param2<TerritoryFlag, string>(m_TargetFlag, paramKick2.param1), true, null);
+				}
+			}
+			else if (m_PendingAction == ACTION_TRANSFER)
+			{
+				int rowTransfer2 = m_MembersList.GetSelectedRow();
+				if (rowTransfer2 > -1)
+				{
+					Param1<string> paramTransfer2;
+					m_MembersList.GetItemData(rowTransfer2, 0, paramTransfer2);
+					if (paramTransfer2) GetRPCManager().SendRPC("SDN_TerritoryManager", "SDN_RPC_TransferTerritory", new Param2<TerritoryFlag, string>(m_TargetFlag, paramTransfer2.param1), true, null);
+				}
+			}
+			else if (m_PendingAction == ACTION_LEAVE)
+			{
+				GetRPCManager().SendRPC("SDN_TerritoryManager", "SDN_RPC_LeaveTerritory", new Param1<TerritoryFlag>(m_TargetFlag), true, null);
+				Close();
+			}
+			else if (m_PendingAction == ACTION_ADMIN_RESET)
+			{
+				GetRPCManager().SendRPC("SDN_TerritoryManager", "SDN_RPC_AdminReset", new Param1<TerritoryFlag>(m_TargetFlag), true, null);
+				Close();
+			}
+
+			m_PendingAction = 0;
+			return true;
+		}
+		else if (w == m_PromoteButton)
+		{
+			ShowConfirmationPopup("PROMOVER MEMBRO", "Deseja promover este membro para Moderador?", ACTION_PROMOTE);
 			return true;
 		}
 		else if (w == m_DemoteButton)
@@ -334,42 +416,22 @@ class SDN_TerritoryMenu extends UIScriptedMenu
 		}
 		else if (w == m_KickButton)
 		{
-			int rowKick = m_MembersList.GetSelectedRow();
-			if (rowKick > -1)
-			{
-				Param1<string> paramKick;
-				m_MembersList.GetItemData(rowKick, 0, paramKick);
-				if (paramKick)
-				{
-					GetRPCManager().SendRPC("SDN_TerritoryManager", "SDN_RPC_KickMember", new Param2<TerritoryFlag, string>(m_TargetFlag, paramKick.param1), true, null);
-				}
-			}
+			ShowConfirmationPopup("EXPULSAR MEMBRO", "Deseja remover este membro da base?", ACTION_KICK);
 			return true;
 		}
 		else if (w == m_TransferTerritoryButton)
 		{
-			int rowTransfer = m_MembersList.GetSelectedRow();
-			if (rowTransfer > -1)
-			{
-				Param1<string> paramTransfer;
-				m_MembersList.GetItemData(rowTransfer, 0, paramTransfer);
-				if (paramTransfer)
-				{
-					GetRPCManager().SendRPC("SDN_TerritoryManager", "SDN_RPC_TransferTerritory", new Param2<TerritoryFlag, string>(m_TargetFlag, paramTransfer.param1), true, null);
-				}
-			}
+			ShowConfirmationPopup("TRANSFERIR BASE", "Deseja transferir a base? Você perderá o cargo de dono.", ACTION_TRANSFER);
 			return true;
 		}
 		else if (w == m_LeaveBaseButton)
 		{
-			GetRPCManager().SendRPC("SDN_TerritoryManager", "SDN_RPC_LeaveTerritory", new Param1<TerritoryFlag>(m_TargetFlag), true, null);
-			Close();
+			ShowConfirmationPopup("SAIR DA BASE", "Deseja sair da base? Você perderá o acesso.", ACTION_LEAVE);
 			return true;
 		}
 		else if (w == m_AdminResetButton)
 		{
-			GetRPCManager().SendRPC("SDN_TerritoryManager", "SDN_RPC_AdminReset", new Param1<TerritoryFlag>(m_TargetFlag), true, null);
-			Close();
+			ShowConfirmationPopup("RESETAR BASE", "ATENÇÃO ADMIN: Deseja deletar esta base permanentemente?", ACTION_ADMIN_RESET);
 			return true;
 		}
 
