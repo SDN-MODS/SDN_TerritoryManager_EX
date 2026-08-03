@@ -116,8 +116,7 @@ class SDN_MessageManager
 				NotificationSystem.SendNotificationToPlayerIdentityExtended(player.GetIdentity(), 5.0, title, msg, iconPath);
 				
 				// Server toca som via RPC no cliente
-				Param2<string, bool> sndData = new Param2<string, bool>(actionName, isError);
-				GetRPCManager().SendRPC("SDN_TerritoryManager", "SDN_PlaySound", sndData, true, player.GetIdentity());
+				if (!SDN_TerritoryConfig.Get() || SDN_TerritoryConfig.Get().EnableNotificationSounds == 1) { Param2<string, bool> sndData = new Param2<string, bool>(actionName, isError); GetRPCManager().SendRPC("SDN_TerritoryManager", "SDN_PlaySound", sndData, true, player.GetIdentity()); }
 			}
 			else if (GetGame().IsClient())
 			{
@@ -168,8 +167,7 @@ class SDN_MessageManager
 			{
 				NotificationSystem.SendNotificationToPlayerIdentityExtended(player.GetIdentity(), 5.0, title, msg, iconPath);
 				
-				Param2<string, bool> sndData = new Param2<string, bool>(actionName, false); // Membros normalmente não é sound erro forte
-				GetRPCManager().SendRPC("SDN_TerritoryManager", "SDN_PlaySound", sndData, true, player.GetIdentity());
+				if (!SDN_TerritoryConfig.Get() || SDN_TerritoryConfig.Get().EnableNotificationSounds == 1) { Param2<string, bool> sndData = new Param2<string, bool>(actionName, false); GetRPCManager().SendRPC("SDN_TerritoryManager", "SDN_PlaySound", sndData, true, player.GetIdentity()); }
 			}
 			else if (GetGame().IsClient())
 			{
@@ -182,6 +180,7 @@ class SDN_MessageManager
 
 	static void SDN_PlayLocalSound(bool isError)
 	{
+		if (SDN_TerritoryConfig.Get() && SDN_TerritoryConfig.Get().EnableNotificationSounds == 0) return;
 		if (!GetGame().IsClient() && !GetGame().IsMultiplayer()) return;
 		
 		string soundSet = "SDN_Notification_Normal_SoundSet";

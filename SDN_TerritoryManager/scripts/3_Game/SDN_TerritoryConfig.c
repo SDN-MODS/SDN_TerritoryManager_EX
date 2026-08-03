@@ -155,6 +155,7 @@ class SDN_TerritoryConfig
 	
 	// NOVO: Lifetime fora de territórios
 	int LifeTimeStorageVanilla = 3888000;
+		int EnableNotificationSounds = 1;
 	
 	// CORREÇÃO: As variáveis que tinham desaparecido voltaram ao seu lugar!
 	int BaseBuildPartsMax = 5; 
@@ -177,7 +178,8 @@ class SDN_TerritoryConfig
 		KitLifeTimes = new map<string, int>;
 		NoBuildZones = new array<ref SDN_NoBuildZone>;
 		BaseBuildParts = new TStringArray; 
-		BaseStorageParts = new TStringArray; // Previne crashes
+		BaseStorageParts = new TStringArray;
+			EnableNotificationSounds = 1;
 	}
 	
 	static SDN_TerritoryConfig Get()
@@ -287,6 +289,7 @@ class SDN_TerritoryConfig
 		AutoBuildFlagpoleMode = 3; 
 		
 		LifeTimeStorageVanilla = 3888000;
+		EnableNotificationSounds = 1;
 		
 		WhiteList.Insert("Trap");
 		WhiteList.Insert("Paper");
