@@ -179,11 +179,13 @@ modded class MissionServer extends MissionBase
 				// Apenas conceder a propriedade e resetar os membros DEPOIS de validar o nome
 				if (flag.SDN_CanReceiveNewOwner())
 				{
+					SDN_Logger.LogAdmin("O Administrador " + sender.GetName() + " (" + guid + ") resetou (deletou os dados de) a base " + flag.SDN_GetTerritoryName() + ".");
 					flag.SDN_ResetMembers();
 					flag.SDN_SetTerritoryOwner(guid);
 				}
 				
 				flag.SDN_SetTerritoryName(newName);
+					SDN_Logger.LogInfo("O jogador " + sender.GetName() + " (" + guid + ") registrou a base: " + newName);
 				if (pb) {
 					string msgSuc = SDN_TerritoryConfig.Get().MessageSettings.Alerts.TerritoryCmdCreateSuccess;
 					msgSuc.Replace("%1", newName);
@@ -255,6 +257,7 @@ modded class MissionServer extends MissionBase
 				if (currentPerm & SDN_TerritoryPerm.REMOVEMEMBER) return; // Ja e moderador, faz nada
 
 				flag.SDN_PromoteModerator(targetGuid);
+					SDN_Logger.LogInfo("O dono " + sender.GetName() + " promoveu o membro " + flag.SDN_GetMemberName(targetGuid) + " (" + targetGuid + ") para moderador na base " + flag.SDN_GetTerritoryName() + ".");
 				if (pb)
 				{
 				    string msg = SDN_TerritoryConfig.Get().MessageSettings.ChatOnly.PromotedModerator;
@@ -290,6 +293,7 @@ modded class MissionServer extends MissionBase
 				if (!(currentPerm & SDN_TerritoryPerm.REMOVEMEMBER)) return; // Nao e moderador, faz nada
 
 				flag.SDN_DemoteModerator(targetGuid);
+					SDN_Logger.LogInfo("O dono " + sender.GetName() + " rebaixou o moderador " + flag.SDN_GetMemberName(targetGuid) + " (" + targetGuid + ") na base " + flag.SDN_GetTerritoryName() + ".");
 				if (pb)
 				{
 				    string msg = SDN_TerritoryConfig.Get().MessageSettings.ChatOnly.DemotedMember;
@@ -323,6 +327,7 @@ modded class MissionServer extends MissionBase
 				
 				string mName = flag.SDN_GetMemberName(targetGuid);
 				flag.SDN_RemoveMember(targetGuid);
+					SDN_Logger.LogInfo("O admin/moderador " + sender.GetName() + " (" + guid + ") expulsou o membro " + mName + " (" + targetGuid + ") da base " + flag.SDN_GetTerritoryName() + ".");
 				
 				// Aplicar cooldown ao membro expulso se configurado
 				float cooldown = SDN_TerritoryConfig.Get().LeaveTerritoryCooldownMinutes;
@@ -363,6 +368,7 @@ modded class MissionServer extends MissionBase
 				flag.SDN_SetTerritoryOwner(newOwnerGUID, newOwnerName);
 				flag.SDN_AddMember(oldOwnerGUID, sender.GetName());
 					flag.SDN_PromoteModerator(oldOwnerGUID);
+					SDN_Logger.LogAdmin("O dono " + sender.GetName() + " (" + oldOwnerGUID + ") transferiu a posse da base " + flag.SDN_GetTerritoryName() + " para o jogador " + newOwnerName + " (" + newOwnerGUID + ").");
 
 				if (pb)
 				{
@@ -416,10 +422,12 @@ modded class MissionServer extends MissionBase
 				if (flag.SDN_IsTerritoryOwner(guid))
 				{
 					flag.SDN_AbandonTerritory();
+						SDN_Logger.LogInfo("O dono " + sender.GetName() + " (" + guid + ") abandonou a base " + flag.SDN_GetTerritoryName() + ".");
 				}
 				else
 				{
 					flag.SDN_RemoveMember(guid);
+						SDN_Logger.LogInfo("O membro " + sender.GetName() + " (" + guid + ") saiu voluntariamente da base " + flag.SDN_GetTerritoryName() + ".");
 				}
 				
 				float cooldown = SDN_TerritoryConfig.Get().LeaveTerritoryCooldownMinutes;
@@ -455,7 +463,8 @@ modded class MissionServer extends MissionBase
 			if (SDN_TerritoryConfig.Get().ServerAdmins) isAdmin = SDN_TerritoryConfig.Get().ServerAdmins.Find(guid) != -1;
 			if (flag && isAdmin)
 			{
-				flag.SDN_ResetMembers();
+				SDN_Logger.LogAdmin("O Administrador " + sender.GetName() + " (" + guid + ") resetou (deletou os dados de) a base " + flag.SDN_GetTerritoryName() + ".");
+					flag.SDN_ResetMembers();
 				flag.SDN_SetTerritoryOwner("");
 				flag.SDN_SetTerritoryName("");
 				

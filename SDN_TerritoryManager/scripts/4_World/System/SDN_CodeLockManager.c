@@ -12,7 +12,7 @@ class SDN_CodeLockManager
         if (!config) return true;
 
         int maxLocks = config.MaxCodeLocksPerTerritory;
-        
+
 
         float radius = config.TerritoryRadius;
         vector pos = target.GetPosition();
@@ -68,6 +68,7 @@ class SDN_CodeLockManager
             {
                 if (GetGame().IsServer())
                 {
+                    SDN_Logger.LogWarning("Player " + player.GetIdentity().GetName() + " (" + guid + ") tentou colocar um CodeLock na base '" + closestFlag.SDN_GetTerritoryName() + "' sem permissao de Moderador.");
                     string msgWit = SDN_TerritoryConfig.Get().MessageSettings.Alerts.WithinTerritory;
                     SDN_MessageManager.SendAlert(player, "WithinTerritory", msgWit, true);
                 }
@@ -117,6 +118,10 @@ class SDN_CodeLockManager
         {
             if (GetGame().IsServer())
             {
+                if (player && player.GetIdentity())
+                {
+                    SDN_Logger.LogWarning("Player " + player.GetIdentity().GetName() + " (" + player.GetIdentity().GetPlainId() + ") foi impedido de colocar o CodeLock numero " + (currentLocks + 1).ToString() + ". O limite da base e " + maxLocks.ToString() + ".");
+                }
                 SDN_NotifyPlayersLimitReached(target.GetPosition());
             }
             return false;

@@ -44,10 +44,13 @@ modded class ActionDismantlePart : ActionContinuousBase
 				// Validação de permissão SDN_TerritoryPerm.DISMANTLE
 				if (!TerritoryFlag.SDN_HasTerritoryPermAtPos(theGUID, SDN_TerritoryPerm.DISMANTLE, theTarget.GetPosition()))
 				{
-					if (GetGame().IsClient())
+					if (GetGame().IsServer())
 					{
-							return false;
-						}
+						string pname = "Unknown";
+						if (thePlayer.GetIdentity()) pname = thePlayer.GetIdentity().GetName();
+						SDN_Logger.LogRaid("Player " + pname + " (" + theGUID + ") tentou desmantelar uma peca em um territorio sem permissao de DISMANTLE. Posicao: " + theTarget.GetPosition().ToString());
+					}
+					return false;
 				}
 			}
 		}
