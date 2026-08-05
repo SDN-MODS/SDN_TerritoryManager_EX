@@ -48,9 +48,22 @@ modded class ActionDismantlePart : ActionContinuousBase
 					{
 						string pname = "Unknown";
 						if (thePlayer.GetIdentity()) pname = thePlayer.GetIdentity().GetName();
-						SDN_Logger.LogRaid("Player " + pname + " (" + theGUID + ") tentou desmantelar uma peca em um territorio sem permissao de DISMANTLE. Posicao: " + theTarget.GetPosition().ToString());
+
+						if (SDN_TerritoryConfig.Get() && SDN_TerritoryConfig.Get().PreventEnemyDismantle == 0)
+						{
+							SDN_Logger.LogRaid("RAID PERMITIDO: Player " + pname + " (" + theGUID + ") desmantelou uma peca inimiga na posicao: " + theTarget.GetPosition().ToString());
+							// Does not return false, allows the raid.
+						}
+						else
+						{
+							SDN_Logger.LogRaid("RAID BLOQUEADO: Player " + pname + " (" + theGUID + ") tentou desmantelar uma peca em um territorio sem permissao de DISMANTLE. Posicao: " + theTarget.GetPosition().ToString());
+						}
 					}
-					return false;
+
+					if (!SDN_TerritoryConfig.Get() || SDN_TerritoryConfig.Get().PreventEnemyDismantle == 1)
+					{
+						return false;
+					}
 				}
 			}
 		}
