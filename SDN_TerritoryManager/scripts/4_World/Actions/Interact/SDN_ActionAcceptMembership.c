@@ -103,6 +103,7 @@ class ActionSDN_AcceptMembership extends ActionInteractBase
 					}
 
 					theFlag.SDN_AddMember(guid, thePlayer.GetIdentity().GetName());
+						SDN_Logger.LogInfo("O jogador " + thePlayer.GetIdentity().GetName() + " (" + guid + ") aceitou o convite e entrou na base '" + theFlag.SDN_GetTerritoryName() + "'. [ID: " + theFlag.SDN_GetTerritoryID() + " | Loc: " + theFlag.GetPosition().ToString() + "]");
 					Print("[SDN_TerritoryManager] Jogador " + thePlayer.GetIdentity().GetName() + " (" + guid + ") juntou-se ao território.");
 					
 					// FORÇA O SYNC INSTANTÂNEO DOS DADOS PARA O CLIENTE (Garante que a UI e permissões atualizem na hora)
@@ -112,6 +113,7 @@ class ActionSDN_AcceptMembership extends ActionInteractBase
 				else if (!theFlag.SDN_IsTerritoryOwner(guid))
 				{
 					theFlag.SDN_RemoveMember(guid);
+						SDN_Logger.LogInfo("O membro " + thePlayer.GetIdentity().GetName() + " (" + guid + ") saiu voluntariamente (via mastro) da base '" + theFlag.SDN_GetTerritoryName() + "'. [ID: " + theFlag.SDN_GetTerritoryID() + " | Loc: " + theFlag.GetPosition().ToString() + "]");
 					
 					// APLICAÇÃO DO CASTIGO AO ABANDONAR!
 					float cooldownMinutes = SDN_TerritoryConfig.Get().LeaveTerritoryCooldownMinutes;

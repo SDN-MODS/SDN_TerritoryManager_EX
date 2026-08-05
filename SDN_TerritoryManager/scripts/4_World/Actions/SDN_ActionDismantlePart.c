@@ -51,12 +51,12 @@ modded class ActionDismantlePart : ActionContinuousBase
 
 						if (SDN_TerritoryConfig.Get() && SDN_TerritoryConfig.Get().PreventEnemyDismantle == 0)
 						{
-							SDN_Logger.LogRaid("RAID PERMITIDO: Player " + pname + " (" + theGUID + ") desmantelou uma peca inimiga na posicao: " + theTarget.GetPosition().ToString());
+							SDN_Logger.LogRaid("RAID PERMITIDO: Player " + pname + " (" + theGUID + ") desmantelou uma peca inimiga. [Base_Location: " + theTarget.GetPosition().ToString() + "]");
 							// Does not return false, allows the raid.
 						}
 						else
 						{
-							SDN_Logger.LogRaid("RAID BLOQUEADO: Player " + pname + " (" + theGUID + ") tentou desmantelar uma peca em um territorio sem permissao de DISMANTLE. Posicao: " + theTarget.GetPosition().ToString());
+							SDN_Logger.LogRaid("RAID BLOQUEADO: Player " + pname + " (" + theGUID + ") tentou desmantelar uma peca em um territorio sem permissao de DISMANTLE. [Base_Location: " + theTarget.GetPosition().ToString() + "]");
 						}
 					}
 

@@ -68,7 +68,7 @@ class SDN_CodeLockManager
             {
                 if (GetGame().IsServer())
                 {
-                    SDN_Logger.LogWarning("Player " + player.GetIdentity().GetName() + " (" + guid + ") tentou colocar um CodeLock na base '" + closestFlag.SDN_GetTerritoryName() + "' sem permissao de Moderador.");
+                    SDN_Logger.LogWarning("Player " + player.GetIdentity().GetName() + " (" + guid + ") tentou colocar um CodeLock na base '" + closestFlag.SDN_GetTerritoryName() + "' sem permissao de Moderador. [ID: " + closestFlag.SDN_GetTerritoryID() + " | Loc: " + closestFlag.GetPosition().ToString() + "]");
                     string msgWit = SDN_TerritoryConfig.Get().MessageSettings.Alerts.WithinTerritory;
                     SDN_MessageManager.SendAlert(player, "WithinTerritory", msgWit, true);
                 }
@@ -120,7 +120,7 @@ class SDN_CodeLockManager
             {
                 if (player && player.GetIdentity())
                 {
-                    SDN_Logger.LogWarning("Player " + player.GetIdentity().GetName() + " (" + player.GetIdentity().GetPlainId() + ") foi impedido de colocar o CodeLock numero " + (currentLocks + 1).ToString() + ". O limite da base e " + maxLocks.ToString() + ".");
+                    SDN_Logger.LogWarning("Player " + player.GetIdentity().GetName() + " (" + player.GetIdentity().GetPlainId() + ") foi impedido de colocar o CodeLock numero " + (currentLocks + 1).ToString() + ". O limite da base e " + maxLocks.ToString() + ". [ID: " + closestFlag.SDN_GetTerritoryID() + " | Loc: " + closestFlag.GetPosition().ToString() + "]");
                 }
                 SDN_NotifyPlayersLimitReached(target.GetPosition());
             }
@@ -213,6 +213,7 @@ class SDN_CodeLockManager
             if (!closestFlag.SDN_IsTerritoryOwner(guid) && !closestFlag.SDN_CheckPlayerPermission(guid, SDN_TerritoryPerm.REMOVEMEMBER))
             {
                 string msgWit = SDN_TerritoryConfig.Get().MessageSettings.Alerts.WithinTerritory;
+                SDN_Logger.LogWarning("Player " + closestPlayer.GetIdentity().GetName() + " (" + guid + ") tentou forcar a colocacao de um CodeLock na base '" + closestFlag.SDN_GetTerritoryName() + "' sem permissao de Moderador. [ID: " + closestFlag.SDN_GetTerritoryID() + " | Loc: " + closestFlag.GetPosition().ToString() + "]");
                 SDN_MessageManager.SendAlert(closestPlayer, "WithinTerritory", msgWit, true);
                 return true; // Unauthorized
             }

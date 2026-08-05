@@ -1,12 +1,16 @@
 class SDN_Logger
 {
-    static string m_SDN_LogDirectory = "$profile:SDN_MODS\\SDN_Logs";
+    static string m_SDN_LogDirectory = "$profile:SDN_MODS\\SDN_Logs\\SDN_TerritoryManager_Logs";
 
     static void Log(string level, string message)
     {
         if (!GetGame().IsServer()) return;
 
         // Ensure directory exists
+        if (!FileExist("$profile:SDN_MODS\\SDN_Logs"))
+        {
+            MakeDirectory("$profile:SDN_MODS\\SDN_Logs");
+        }
         if (!FileExist(m_SDN_LogDirectory))
         {
             MakeDirectory(m_SDN_LogDirectory);

@@ -58,4 +58,16 @@ modded class ActionLowerFlag: ActionContinuousBase
 			}
 		}
 	}
+
+	override void OnFinishProgressServer(ActionData action_data)
+	{
+		super.OnFinishProgressServer(action_data);
+
+		TerritoryFlag theFlag = TerritoryFlag.Cast(action_data.m_Target.GetObject());
+		if (theFlag && action_data.m_Player && action_data.m_Player.GetIdentity())
+		{
+			string guid = action_data.m_Player.GetIdentity().GetPlainId();
+			SDN_Logger.LogInfo("A bandeira do territorio '" + theFlag.SDN_GetTerritoryName() + "' foi abaixada por " + action_data.m_Player.GetIdentity().GetName() + " (" + guid + "). [ID: " + theFlag.SDN_GetTerritoryID() + " | Loc: " + theFlag.GetPosition().ToString() + "]");
+		}
+	}
 }
