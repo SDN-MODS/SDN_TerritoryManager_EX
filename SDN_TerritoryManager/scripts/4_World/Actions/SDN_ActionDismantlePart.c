@@ -44,22 +44,6 @@ modded class ActionDismantlePart : ActionContinuousBase
 				// Validação de permissão SDN_TerritoryPerm.DISMANTLE
 				if (!TerritoryFlag.SDN_HasTerritoryPermAtPos(theGUID, SDN_TerritoryPerm.DISMANTLE, theTarget.GetPosition()))
 				{
-					if (GetGame().IsServer())
-					{
-						string pname = "Unknown";
-						if (thePlayer.GetIdentity()) pname = thePlayer.GetIdentity().GetName();
-
-						if (SDN_TerritoryConfig.Get() && SDN_TerritoryConfig.Get().PreventEnemyDismantle == 0)
-						{
-							SDN_Logger.LogRaid("RAID PERMITIDO: Player " + pname + " (" + theGUID + ") desmantelou uma peca inimiga. [Base_Location: " + theTarget.GetPosition().ToString() + "]");
-							// Does not return false, allows the raid.
-						}
-						else
-						{
-							SDN_Logger.LogRaid("RAID BLOQUEADO: Player " + pname + " (" + theGUID + ") tentou desmantelar uma peca em um territorio sem permissao de DISMANTLE. [Base_Location: " + theTarget.GetPosition().ToString() + "]");
-						}
-					}
-
 					if (!SDN_TerritoryConfig.Get() || SDN_TerritoryConfig.Get().PreventEnemyDismantle == 1)
 					{
 						return false;
@@ -69,5 +53,54 @@ modded class ActionDismantlePart : ActionContinuousBase
 		}
 
 		return true;
+	}
+
+	override void OnStartServer(ActionData action_data)
+	{
+		super.OnStartServer(action_data);
+
+		ItemBase theTarget;
+		if (Class.CastTo(theTarget, action_data.m_Target.GetObject()) || Class.CastTo(theTarget, action_data.m_Target.GetParent()))
+		{
+			PlayerBase thePlayer = PlayerBase.Cast(action_data.m_Player);
+			if (theTarget && thePlayer && thePlayer.GetIdentity())
+			{
+				string theGUID = thePlayer.GetIdentity().GetPlainId();
+				if (!TerritoryFlag.SDN_HasTerritoryPermAtPos(theGUID, SDN_TerritoryPerm.DISMANTLE, theTarget.GetPosition()))
+				{
+					string pname = thePlayer.GetIdentity().GetName();
+					if (!SDN_TerritoryConfig.Get() || SDN_TerritoryConfig.Get().PreventEnemyDismantle == 1)
+					{
+						SDN_Logger.LogRaid("RAID BLOQUEADO: Player " + pname + " (" + theGUID + ") tentou desmantelar uma peca em um territorio sem permissao de DISMANTLE. [Base_Location: " + theTarget.GetPosition().ToString() + "]");
+					}
+					else
+					{
+						SDN_Logger.LogRaid("RAID INICIADO: Player " + pname + " (" + theGUID + ") esta a desmantelar uma peca inimiga. [Base_Location: " + theTarget.GetPosition().ToString() + "]");
+					}
+				}
+			}
+		}
+	}
+
+	override void OnFinishProgressServer(ActionData action_data)
+	{
+		super.OnFinishProgressServer(action_data);
+
+		ItemBase theTarget;
+		if (Class.CastTo(theTarget, action_data.m_Target.GetObject()) || Class.CastTo(theTarget, action_data.m_Target.GetParent()))
+		{
+			PlayerBase thePlayer = PlayerBase.Cast(action_data.m_Player);
+			if (theTarget && thePlayer && thePlayer.GetIdentity())
+			{
+				string theGUID = thePlayer.GetIdentity().GetPlainId();
+				if (!TerritoryFlag.SDN_HasTerritoryPermAtPos(theGUID, SDN_TerritoryPerm.DISMANTLE, theTarget.GetPosition()))
+				{
+					if (SDN_TerritoryConfig.Get() && SDN_TerritoryConfig.Get().PreventEnemyDismantle == 0)
+					{
+						SDN_Logger.LogRaid("RAID CONCLUIDO: Player " + thePlayer.GetIdentity().GetName() + " (" + theGUID + ") terminou de desmantelar a peca inimiga. [Base_Location: " + theTarget.GetPosition().ToString() + "]");
+					}
+				}
+			}
+		}
 	}
 }

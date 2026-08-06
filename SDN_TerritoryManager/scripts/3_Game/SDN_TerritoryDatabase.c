@@ -138,8 +138,8 @@ class SDN_TerritoryDatabase
 	int SDN_GetUnixTimestamp()
 	{
 		int year, month, day, hour, minute, second;
-		GetGame().GetYearMonthDayUTC(year, month, day);
-		GetGame().GetHourMinuteSecondUTC(hour, minute, second);
+		GetYearMonthDayUTC(year, month, day);
+		GetHourMinuteSecondUTC(hour, minute, second);
 
 		int days = day - 1;
 		int y = year;
