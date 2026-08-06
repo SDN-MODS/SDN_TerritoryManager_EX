@@ -118,6 +118,9 @@ modded class MissionGameplay extends MissionBase
 			}
 		}
 
+		// Safety null check to prevent client crashes
+		if (!m_SDN_Config || !m_SDN_Config.MessageSettings || !m_SDN_Config.MessageSettings.RadarToasts) return;
+
 		if (nearestID != m_SDN_CurrentTerritoryID)
 		{
 			if (m_SDN_CurrentTerritoryID != "")
