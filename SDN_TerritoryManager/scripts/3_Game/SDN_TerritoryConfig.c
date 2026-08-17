@@ -155,8 +155,9 @@ class SDN_TerritoryConfig
 	
 	// NOVO: Lifetime fora de territórios
 	int LifeTimeStorageVanilla = 3888000;
-		int EnableNotificationSounds = 1;
-		int PreventEnemyDismantle = 1;
+	int EnableNotificationSounds = 1;
+	int PreventEnemyDismantle = 1;
+	int TeleportEnemyOnLogin = 0;
 	
 	// CORREÇÃO: As variáveis que tinham desaparecido voltaram ao seu lugar!
 	int BaseBuildPartsMax = 5; 
@@ -180,8 +181,9 @@ class SDN_TerritoryConfig
 		NoBuildZones = new array<ref SDN_NoBuildZone>;
 		BaseBuildParts = new TStringArray; 
 		BaseStorageParts = new TStringArray;
-			EnableNotificationSounds = 1;
-			PreventEnemyDismantle = 1;
+		EnableNotificationSounds = 1;
+		PreventEnemyDismantle = 1;
+		TeleportEnemyOnLogin = 0;
 	}
 	
 	static SDN_TerritoryConfig Get()
@@ -292,7 +294,8 @@ class SDN_TerritoryConfig
 		
 		LifeTimeStorageVanilla = 3888000;
 		EnableNotificationSounds = 1;
-			PreventEnemyDismantle = 1;
+		PreventEnemyDismantle = 1;
+		TeleportEnemyOnLogin = 0;
 		
 		WhiteList.Insert("Trap");
 		WhiteList.Insert("Paper");

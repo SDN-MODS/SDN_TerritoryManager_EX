@@ -7,6 +7,49 @@ modded class MissionServer extends MissionBase
 {
 	int m_SDN_LastAbandonedAlertIdx = 0;
 
+
+	override void InvokeOnConnect(PlayerBase player, PlayerIdentity identity)
+	{
+		super.InvokeOnConnect(player, identity);
+
+		if (!player || !identity) return;
+
+		string guid = identity.GetPlainId();
+		vector pos = player.GetPosition();
+		float radiusSq = SDN_TerritoryConfig.Get().TerritoryRadius * SDN_TerritoryConfig.Get().TerritoryRadius;
+
+		if (TerritoryFlag.m_SDN_AllFlags)
+		{
+			foreach (TerritoryFlag flag : TerritoryFlag.m_SDN_AllFlags)
+			{
+				if (!flag) continue;
+
+				if (vector.DistanceSq(pos, flag.GetPosition()) <= radiusSq)
+				{
+					if (!flag.SDN_IsTerritoryOwner(guid) && !flag.SDN_IsTerritoryMember(guid))
+					{
+					    // Se The config explicitly checks for teleport
+					    if (SDN_TerritoryConfig.Get() && SDN_TerritoryConfig.Get().TeleportEnemyOnLogin)
+					    {
+					        // Safe radius to teleport to outside the base. Slightly larger than radius.
+					        float newRadius = SDN_TerritoryConfig.Get().TerritoryRadius + 5.0;
+
+					        vector newPos = flag.GetPosition();
+					        newPos[0] = newPos[0] + newRadius;
+					        // In DayZ, snapping to ground is required, but setting just x,z and relying on engine to correct Y or finding surface is better.
+					        // However, a simple snap to ground surface is safe.
+					        newPos[1] = GetGame().SurfaceY(newPos[0], newPos[2]);
+
+					        player.SetPosition(newPos);
+					        SDN_Logger.LogInfo("O invasor " + identity.GetName() + " (" + guid + ") tentou logar dentro da base " + flag.SDN_GetTerritoryName() + " e foi teleportado para fora. [ID: " + flag.SDN_GetTerritoryID() + " | Loc: " + flag.GetPosition().ToString() + "]");
+					    }
+					}
+					break; // Found the flag they are in, no need to check others
+				}
+			}
+		}
+	}
+
 	void MissionServer()
 	{
 		GetRPCManager().AddRPC("SDN_TerritoryManager", "SDN_ShowToast", this, SingeplayerExecutionType.Server);
